@@ -3,83 +3,168 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Amazon — Guía digital</title>
+<title>RefundProyect — Método Amazon</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Newsreader:ital,wght@0,400;1,400;1,500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
   :root{
-    --bg:#0c0c0c; --ink:#ece8e0; --muted:#8a8578;
-    --line:rgba(236,232,224,0.14); --brass:#b08d57;
+    --bg:#0b0c10;
+    --surface:#15171d;
+    --surface-2:#1b1e25;
+    --ink:#f4f5f7;
+    --muted:#8c93a1;
+    --line:rgba(244,245,247,0.09);
+    --accent:#6f6bf0;
+    --accent-2:#f5a94e;
   }
   *{box-sizing:border-box;}
   html{scroll-behavior:smooth;}
-  body{margin:0; background:var(--bg); color:var(--ink); font-family:'Newsreader', serif; line-height:1.6;}
-  h1,.display{font-family:'Oswald', sans-serif; text-transform:uppercase; letter-spacing:0.03em; font-weight:600; margin:0;}
-  .wrap{max-width:640px; margin:0 auto; padding:0 24px;}
-  header{display:flex; justify-content:space-between; align-items:center; padding:28px 24px; border-bottom:1px solid var(--line);}
-  .mark{font-family:'Oswald',sans-serif; letter-spacing:0.08em; font-size:14px; color:var(--muted);}
-  .hero{padding:72px 0 40px;}
-  .hero .kicker{font-style:italic; color:var(--brass); font-size:18px; margin-bottom:14px; display:block;}
-  .hero h1{font-size:clamp(40px,9vw,64px); line-height:1.02;}
-  .hero p.lead{margin-top:20px; font-size:19px; color:#cfcbc0; max-width:46ch;}
-  .price-row{display:flex; align-items:baseline; gap:14px; margin:36px 0 28px; border-top:1px solid var(--line); border-bottom:1px solid var(--line); padding:20px 0;}
-  .price{font-family:'Oswald',sans-serif; font-size:40px; font-weight:600;}
-  .price-note{color:var(--muted); font-size:15px;}
-  #paypal-button-container{max-width:340px; margin-top:8px;}
-  .status{margin-top:16px; font-size:15px;}
-  .status.ok{color:#9fd6a5;}
-  .status.err{color:#e08a8a;}
+  body{
+    margin:0; background:var(--bg); color:var(--ink);
+    font-family:'Manrope', sans-serif; line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:600px; margin:0 auto; padding:0 24px; text-align:center;}
+
+  .glow{
+    position:fixed; top:-260px; left:50%; transform:translateX(-50%);
+    width:820px; height:520px; pointer-events:none;
+    background:radial-gradient(circle, rgba(111,107,240,0.28), transparent 65%);
+    z-index:0;
+  }
+
+  header{
+    position:relative; z-index:1;
+    display:flex; justify-content:center; align-items:center; gap:16px;
+    padding:26px 24px;
+  }
+  .brand{font-size:15px; font-weight:700; letter-spacing:-0.01em;}
+  .brand span{color:var(--accent-2);}
+  .tag{font-size:13px; color:var(--muted);}
+  .tag::before{content:"·"; margin-right:16px; color:var(--line);}
+
+  .hero{position:relative; z-index:1; padding:64px 0 0; display:flex; flex-direction:column; align-items:center;}
+  .pill{
+    display:inline-flex; align-items:center; gap:8px; padding:7px 16px;
+    background:var(--surface); border:1px solid var(--line); border-radius:999px;
+    font-size:13px; color:var(--muted); margin-bottom:28px;
+  }
+  .pill .dot{width:6px; height:6px; border-radius:50%; background:var(--accent-2);}
+
+  .hero h1{
+    font-size:clamp(44px,9vw,72px); font-weight:800; letter-spacing:-0.03em;
+    line-height:1.02; margin:0;
+  }
+  .hero p.lead{margin:22px auto 0; font-size:18px; color:var(--muted); max-width:42ch;}
+
+  .card{
+    margin-top:40px; width:100%;
+    background:linear-gradient(180deg, var(--surface), var(--surface-2));
+    border:1px solid var(--line); border-radius:24px;
+    padding:36px 32px; display:flex; flex-direction:column; align-items:center; gap:22px;
+    box-shadow:0 30px 60px -30px rgba(0,0,0,0.6);
+  }
+  .card .amount{display:flex; align-items:baseline; gap:6px;}
+  .card .amount .v{font-size:48px; font-weight:800; letter-spacing:-0.02em;}
+  .card .amount .c{font-size:18px; color:var(--muted); font-weight:600;}
+  .card .amount-note{font-size:14px; color:var(--muted); margin-top:-14px;}
+
+  .buy-btn{
+    font-family:'Manrope', sans-serif; font-weight:700; font-size:16px;
+    color:#0b0c10; background:var(--accent-2);
+    border:none; border-radius:14px; padding:16px 32px; cursor:pointer;
+    min-width:240px; transition:transform .15s ease, filter .15s ease;
+  }
+  .buy-btn:hover{filter:brightness(1.08); transform:translateY(-1px);}
+  .buy-btn:disabled{opacity:0.5; cursor:not-allowed;}
+  #paypal-button-container{max-width:280px; width:100%;}
+
+  .status{font-size:14px; text-align:center;}
+  .status.ok{color:#7fe0a0;}
+  .status.err{color:#f28b8b;}
   .status.pending{color:var(--muted); font-style:italic;}
-  section.detail{padding:48px 0; border-top:1px solid var(--line);}
-  section.detail h2{font-family:'Oswald',sans-serif; text-transform:uppercase; font-size:22px; margin-bottom:20px;}
-  .detail ul{list-style:none; margin:0; padding:0;}
-  .detail li{padding:16px 0; border-top:1px solid var(--line);}
-  .detail li:first-child{border-top:none;}
-  .detail li .t{font-family:'Oswald',sans-serif; font-size:16px;}
-  .detail li .d{color:var(--muted); font-size:15px;}
-  .fine{padding:40px 0 80px; border-top:1px solid var(--line); color:var(--muted); font-size:14px;}
-  footer{text-align:center; padding:28px; color:var(--muted); font-size:13px; border-top:1px solid var(--line);}
+
+  #download-link{
+    display:none; margin-top:4px; padding:15px 28px; background:var(--accent);
+    color:#fff; font-weight:700; border-radius:14px; text-decoration:none; font-size:15px;
+  }
+
+  section.detail{position:relative; z-index:1; padding:64px 0 0;}
+  section.detail h2{font-size:20px; font-weight:800; letter-spacing:-0.01em; margin:0 0 24px;}
+
+  .detail-list{list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:14px;}
+  .detail-list li{
+    background:var(--surface); border:1px solid var(--line); border-radius:16px;
+    padding:20px 22px; display:flex; flex-direction:column; align-items:center; gap:6px;
+  }
+  .detail-list li .row{display:flex; align-items:center; gap:10px;}
+  .detail-list li .check{
+    width:20px; height:20px; border-radius:50%; background:rgba(111,107,240,0.18);
+    color:var(--accent); display:flex; align-items:center; justify-content:center; flex-shrink:0;
+  }
+  .detail-list li .t{font-weight:700; font-size:15.5px;}
+  .detail-list li .d{color:var(--muted); font-size:14.5px; max-width:38ch;}
+
+  .fine{position:relative; z-index:1; padding:44px 0 90px; color:var(--muted); font-size:14px; max-width:44ch; margin:0 auto; text-align:center;}
+  .fine p{margin:0 0 10px;}
+
+  footer{position:relative; z-index:1; text-align:center; padding:28px; color:var(--muted); font-size:13px; border-top:1px solid var(--line);}
+  footer span{color:var(--accent-2);}
 </style>
 </head>
 <body>
 
+<div class="glow"></div>
+
 <header>
-  <span class="mark">AMAZON — GUÍA</span>
-  <span class="mark">PDF · ENTREGA POR EMAIL</span>
+  <span class="brand">Refund<span>Proyecto</span></span>
+  <span class="tag">PDF · descarga tras el pago</span>
 </header>
 
 <div class="wrap">
   <div class="hero">
-    <span class="kicker">Una sola guía, sin vueltas</span>
-    <h1>Vender en Amazon,<br>explicado de una vez.</h1>
-    <p class="lead">Guía en PDF con el método completo, paso a paso, para empezar a vender en Amazon sin perderte en tutoriales sueltos.</p>
+    <span class="pill"><span class="dot"></span> Guía digital descargable</span>
+    <h1>Método Amazon.</h1>
+    <p class="lead">Una guía en PDF que reúne el método completo, explicado paso a paso, sin tutoriales sueltos ni pasos a medias.</p>
 
-    <div class="price-row">
-      <span class="price">30&nbsp;€</span>
-      <span class="price-note">Pago único · enlace de descarga por email</span>
+    <div class="card">
+      <div>
+        <div class="amount"><span class="v">30</span><span class="c">EUR</span></div>
+        <div class="amount-note">Pago único</div>
+      </div>
+      <button id="buy-button" class="buy-btn">Comprar ahora</button>
+      <div id="paypal-button-container" style="display:none;"></div>
+      <div id="status" class="status"></div>
+      <a id="download-link" href="#">Descargar PDF</a>
     </div>
-
-    <div id="paypal-button-container"></div>
-    <div id="status" class="status"></div>
   </div>
 
   <section class="detail">
     <h2>Qué incluye</h2>
-    <ul>
-      <li><span class="t">Guía completa en PDF</span><span class="d">El método explicado de principio a fin, sin relleno.</span></li>
-      <li><span class="t">Entrega automática</span><span class="d">Al confirmarse el pago, recibes un email con el enlace de descarga.</span></li>
-      <li><span class="t">Acceso permanente</span><span class="d">Guarda el PDF donde quieras, es tuyo.</span></li>
+    <ul class="detail-list">
+      <li>
+        <div class="row"><span class="check">✓</span><span class="t">Guía completa en PDF</span></div>
+        <span class="d">El método explicado de principio a fin, sin relleno ni pasos genéricos.</span>
+      </li>
+      <li>
+        <div class="row"><span class="check">✓</span><span class="t">Entrega automática</span></div>
+        <span class="d">En cuanto se confirma el pago, el botón de descarga aparece al instante en esta misma página.</span>
+      </li>
+      <li>
+        <div class="row"><span class="check">✓</span><span class="t">Acceso permanente</span></div>
+        <span class="d">El archivo es tuyo: descárgalo y consúltalo cuando quieras.</span>
+      </li>
     </ul>
   </section>
 
   <section class="fine">
-    <p>El email llega a los pocos segundos del pago, a la dirección asociada a tu cuenta de PayPal. Revisa también spam.</p>
-    <p>¿No te llegó? Escríbenos y te reenviamos el enlace.</p>
+    <p>El botón de descarga aparece justo después de confirmarse el pago, en esta misma página. Guarda el PDF en ese momento.</p>
+    <p>¿Se cerró la página antes de descargarlo? Escríbenos con tu número de pedido de PayPal.</p>
   </section>
 </div>
 
-<footer>© 2026 — Producto digital de un solo uso.</footer>
+<footer>© 2026 Refund<span>Proyecto</span> — producto digital de un solo uso.</footer>
 
 <!-- ===================== CONFIGURACIÓN (edita solo esto) ===================== -->
 <script>
@@ -87,31 +172,27 @@
     PAYPAL_CLIENT_ID: "YOUR_PAYPAL_CLIENT_ID",   // PayPal → Developer Dashboard → Apps & Credentials
     PRICE: "30.00",
     CURRENCY: "EUR",
-    PRODUCT_NAME: "Amazon — Guía digital (PDF)",
-
-    EMAILJS_PUBLIC_KEY: "YOUR_EMAILJS_PUBLIC_KEY",   // EmailJS → Account → General
-    EMAILJS_SERVICE_ID: "YOUR_EMAILJS_SERVICE_ID",   // EmailJS → Email Services
-    EMAILJS_TEMPLATE_ID: "YOUR_EMAILJS_TEMPLATE_ID", // EmailJS → Email Templates
+    PRODUCT_NAME: "RefundProyect — Método Amazon (PDF)",
 
     // Sube el PDF a tu mismo repo de GitHub Pages con un nombre difícil de adivinar,
-    // por ejemplo: /descargas/x7f2-amazon-guia-2026.pdf  (no lo enlaces desde ningún menú)
+    // por ejemplo: /descargas/x7f2-refundproyect.pdf  (no lo enlaces desde ningún menú)
     DOWNLOAD_LINK: "https://TU-USUARIO.github.io/TU-REPO/descargas/NOMBRE-DIFICIL-DE-ADIVINAR.pdf"
   };
 </script>
 <!-- =========================================================================== -->
 
 <script src="https://www.paypal.com/sdk/js?client-id=CLIENT_ID_PLACEHOLDER&currency=EUR&intent=capture" id="paypal-sdk"></script>
-<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 <script>
-  // Sustituye el client-id del script de PayPal por el configurado arriba,
-  // porque el <script src> no puede usar variables de JS directamente.
   document.getElementById('paypal-sdk').src =
     document.getElementById('paypal-sdk').src.replace('CLIENT_ID_PLACEHOLDER', encodeURIComponent(CONFIG.PAYPAL_CLIENT_ID));
 </script>
 <script>
-  emailjs.init({ publicKey: CONFIG.EMAILJS_PUBLIC_KEY });
-
   const statusEl = document.getElementById('status');
+  const downloadEl = document.getElementById('download-link');
+  const buyBtn = document.getElementById('buy-button');
+  const paypalContainer = document.getElementById('paypal-button-container');
+  let paypalReady = false;
+
   function setStatus(msg, kind){
     statusEl.textContent = msg;
     statusEl.className = 'status ' + (kind || '');
@@ -133,22 +214,16 @@
       onApprove: function(data, actions) {
         setStatus('Confirmando el pago…', 'pending');
         return actions.order.capture().then(function(details) {
-          const email = details.payer && details.payer.email_address;
-          if (!email) {
-            setStatus('Pago recibido, pero no pudimos leer tu email. Contáctanos con tu número de pedido: ' + details.id, 'err');
+          if (details.status !== 'COMPLETED') {
+            setStatus('El pago no se completó. Contáctanos con tu número de pedido: ' + details.id, 'err');
             return;
           }
 
-          return emailjs.send(CONFIG.EMAILJS_SERVICE_ID, CONFIG.EMAILJS_TEMPLATE_ID, {
-            to_email: email,
-            order_id: details.id,
-            download_link: CONFIG.DOWNLOAD_LINK,
-            product_name: CONFIG.PRODUCT_NAME
-          }).then(function() {
-            setStatus('¡Pago confirmado! Revisa tu correo (' + email + ') — te hemos enviado el enlace de descarga.', 'ok');
-          }).catch(function() {
-            setStatus('Pago confirmado, pero el email no se pudo enviar. Contáctanos con tu número de pedido: ' + details.id, 'err');
-          });
+          setStatus('¡Pago confirmado! Tu descarga está lista abajo.', 'ok');
+          downloadEl.href = CONFIG.DOWNLOAD_LINK;
+          downloadEl.style.display = 'inline-block';
+          downloadEl.setAttribute('download', '');
+          downloadEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
         });
       },
 
@@ -157,9 +232,22 @@
       }
 
     }).render('#paypal-button-container');
+    paypalReady = true;
   }
 
+  buyBtn.addEventListener('click', function(){
+    if (paypalReady) {
+      buyBtn.style.display = 'none';
+      paypalContainer.style.display = 'block';
+    } else {
+      setStatus('Falta configurar el Client ID de PayPal en el archivo (bloque CONFIG) para poder cobrar.', 'err');
+    }
+  });
+
   document.getElementById('paypal-sdk').addEventListener('load', initPayPalButtons);
+  document.getElementById('paypal-sdk').addEventListener('error', function(){
+    setStatus('No se pudo cargar PayPal. Revisa el Client ID configurado.', 'err');
+  });
 </script>
 
 </body>
